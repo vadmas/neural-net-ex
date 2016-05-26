@@ -12,6 +12,7 @@ model.W1 = W1;
 model.b1 = b1;
 model.W2 = W2;
 model.b2 = b2;
+model.lambda = lambda;
 for iter = 1:iteration
 	[probs, z1, a1, z2] = forwardProp(model,X);
 
@@ -57,10 +58,15 @@ function [loss] = loss(model, X, y)
 	b1 = model.b1;
 	W2 = model.W2;
 	b2 = model.b2;
+	lambda = model.lambda;
 
 	[probs, z1, a1, z2] = forwardProp(model, X);
 	idx = sub2ind(size(probs),[1:n]',y+1);
 	loss = sum(-log(probs(idx)));
+	% Add regularization to loss
+	loss = loss + lambda/2 * (norm(W1,'fro')^2 + norm(W2,'fro')^2);
+	% Normalize
+	loss = loss / n;
 end
 
 %% forwardProp: Propagates a given X through a nn. 
